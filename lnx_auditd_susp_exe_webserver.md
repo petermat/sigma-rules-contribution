@@ -41,6 +41,28 @@ type=PROCTITLE msg=audit(1556784879.938:141): proctitle="whoami"
 ## SIGMA Code
 
 ```
+title: Detects Executions on Behalf of Web Server
+status: experimental
+description: Purpose of this rule is to detect post exploitation techniques by monitoring of shell commands on behalf of Web Server like Apache and Nginx. Web Server is usually running as user UID=33 without assigned tty.
+references:
+    - 'Internal Research - mostly derived from observing web shell artefacts'
+date: 2019/05/02
+author: Peter Matkovski
+logsource:
+    product: linux
+    service: auditd
+detection:
+    cmd:
+        - type: 'SYSCALL'
+          success: 'yes'
+          uid: '33'
+          tty: '(none)'
+          comm: 'sh'
+          exe: '/bin/dash'
+    condition: cmd
+falsepositives:
+    - Crazy Web Applications 
+level: medium
 ```
 
 ## Version History
@@ -58,3 +80,4 @@ This project is licensed under the MIT License.
 
 Inspiration, code snippets, etc.
 * [Detection of PHP Web Shells with Access log, WAF and Audit Deamon](https://medium.com/@p.matkovski/detection-of-php-web-shells-with-access-log-waf-and-audit-deamon-e798d4c95ec)
+* [Detection of PHP Web Shells with SIGMA](https://medium.com/@p.matkovski/detection-of-php-web-shells-with-sigma-475de8386d2b)
